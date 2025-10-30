@@ -1,0 +1,21 @@
+{
+  "name": "minimal-blog",
+  "version": "1.0.0",
+  "description": "A minimal blog website with CRUD functionality",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "ejs": "^3.1.9",
+    "pg": "^8.11.3",
+    "multer": "^1.4.5-lts.1",
+    "dotenv": "^16.3.1",
+    "method-override": "^3.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

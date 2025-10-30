@@ -1,0 +1,43 @@
+<%- include('partials/header', { title: 'Home' }) %>
+
+<div class="container">
+    <div class="main-content">
+        <div class="posts-grid">
+            <% if (posts.length > 0) { %>
+                <% posts.forEach(post => { %>
+                    <article class="post-card">
+                        <% if (post.image_url) { %>
+                            <img src="<%= post.image_url %>" alt="<%= post.title %>" class="post-image">
+                        <% } %>
+                        <a href="/posts/<%= post.id %>" class="post-title">
+                            <%= post.title %>
+                        </a>
+                        <div class="post-meta">
+                            Posted on <%= new Date(post.created_at).toLocaleDateString() %>
+                        </div>
+                        <div class="post-content-preview">
+                            <%= post.content.substring(0, 200) %>...
+                        </div>
+                        <a href="/posts/<%= post.id %>" class="btn">Read More</a>
+                    </article>
+                <% }) %>
+            <% } else { %>
+                <div class="post-card text-center">
+                    <h2>No posts yet</h2>
+                    <p>Be the first to create a blog post!</p>
+                    <a href="/posts/new" class="btn">Create First Post</a>
+                </div>
+            <% } %>
+        </div>
+        
+        <aside class="sidebar">
+            <h3>About This Blog</h3>
+            <p>A minimal, clean blogging platform built with modern web technologies.</p>
+            <div class="mt-4">
+                <a href="/posts/new" class="btn" style="width: 100%; text-align: center;">Write New Post</a>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<%- include('partials/footer') %>
