@@ -3,8 +3,8 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const { Pool } = require('pg');
+const { requireAuth, requireOwnership } = require('../middleware/auth');
 
-// PostgreSQL connection
 const pool = new Pool({
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
@@ -40,71 +40,102 @@ const upload = multer({
     }
 });
 
-// Routes
+// GET / - Show all posts with author information
 router.get('/', async (req, res) => {
     try {
-        const result = await pool.query(
-            'SELECT * FROM posts ORDER BY created_at DESC'
-        );
-        res.render('index', { posts: result.rows });
+        const result = await pool.query(`
+            SELECT p.*, u.username as author_username 
+            FROM posts p 
+            LEFT JOIN users u ON p.user_id = u.id 
+            ORDER BY p.created_at DESC
+        `);
+        res.render('index', { 
+            posts: result.rows,
+            currentUser: res.locals.currentUser
+        });
     } catch (err) {
         console.error(err);
-        res.status(500).send('Server Error');
+        res.status(500).render('error', { error: 'Server Error' });
     }
 });
 
-router.get('/posts/new', (req, res) => {
-    res.render('new-post');
+// GET /posts/new - Show new post form (require auth)
+router.get('/posts/new', requireAuth, (req, res) => {
+    res.render('new-post', { 
+        title: 'New Post'
+    });
 });
 
-router.post('/posts', upload.single('image'), async (req, res) => {
+// POST /posts - Create new post (require auth)
+router.post('/posts', requireAuth, upload.single('image'), async (req, res) => {
     try {
         const { title, content } = req.body;
         const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
         
         await pool.query(
-            'INSERT INTO posts (title, content, image_url) VALUES ($1, $2, $3)',
-            [title, content, imageUrl]
+            'INSERT INTO posts (title, content, image_url, user_id) VALUES ($1, $2, $3, $4)',
+            [title, content, imageUrl, req.session.userId]
         );
         
         res.redirect('/');
     } catch (err) {
         console.error(err);
-        res.status(500).send('Server Error');
+        res.status(500).render('error', { error: 'Server Error' });
     }
 });
 
+// GET /posts/:id - Show single post with author info
 router.get('/posts/:id', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM posts WHERE id = $1', [req.params.id]);
+        // Get post with author info
+        const postResult = await pool.query(`
+            SELECT p.*, u.username as author_username 
+            FROM posts p 
+            LEFT JOIN users u ON p.user_id = u.id 
+            WHERE p.id = $1
+        `, [req.params.id]);
         
-        if (result.rows.length === 0) {
-            return res.status(404).send('Post not found');
+        if (postResult.rows.length === 0) {
+            return res.status(404).render('error', { error: 'Post not found' });
         }
         
-        res.render('post', { post: result.rows[0] });
+        const post = postResult.rows[0];
+        
+        // Check if current user is the author
+        const isAuthor = req.session.userId === post.user_id;
+        
+        res.render('post', { 
+            post: post,
+            isAuthor: isAuthor,
+            currentUser: res.locals.currentUser
+        });
     } catch (err) {
         console.error(err);
-        res.status(500).send('Server Error');
+        res.status(500).render('error', { error: 'Server Error' });
     }
 });
 
-router.get('/posts/:id/edit', async (req, res) => {
+// GET /posts/:id/edit - Show edit form (require auth + ownership)
+router.get('/posts/:id/edit', requireAuth, requireOwnership('post'), async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM posts WHERE id = $1', [req.params.id]);
         
         if (result.rows.length === 0) {
-            return res.status(404).send('Post not found');
+            return res.status(404).render('error', { error: 'Post not found' });
         }
         
-        res.render('edit-post', { post: result.rows[0] });
+        res.render('edit-post', { 
+            post: result.rows[0],
+            title: 'Edit Post'
+        });
     } catch (err) {
         console.error(err);
-        res.status(500).send('Server Error');
+        res.status(500).render('error', { error: 'Server Error' });
     }
 });
 
-router.put('/posts/:id', upload.single('image'), async (req, res) => {
+// PUT /posts/:id - Update post (require auth + ownership)
+router.put('/posts/:id', requireAuth, requireOwnership('post'), upload.single('image'), async (req, res) => {
     try {
         const { title, content } = req.body;
         let imageUrl = req.body.existingImage;
@@ -121,22 +152,43 @@ router.put('/posts/:id', upload.single('image'), async (req, res) => {
         res.redirect(`/posts/${req.params.id}`);
     } catch (err) {
         console.error(err);
-        res.status(500).send('Server Error');
+        res.status(500).render('error', { error: 'Server Error' });
     }
 });
 
-router.delete('/posts/:id', async (req, res) => {
+// DELETE /posts/:id - Delete post (require auth + ownership)
+router.delete('/posts/:id', requireAuth, requireOwnership('post'), async (req, res) => {
     try {
         await pool.query('DELETE FROM posts WHERE id = $1', [req.params.id]);
         res.redirect('/');
     } catch (err) {
         console.error(err);
-        res.status(500).send('Server Error');
+        res.status(500).render('error', { error: 'Server Error' });
     }
 });
 
+// GET /about - About page
 router.get('/about', (req, res) => {
-    res.render('about');
+    res.render('about', { title: 'About' });
+});
+
+// GET /my-posts - Show current user's posts
+router.get('/my-posts', requireAuth, async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT * FROM posts 
+            WHERE user_id = $1 
+            ORDER BY created_at DESC
+        `, [req.session.userId]);
+        
+        res.render('my-posts', {
+            posts: result.rows,
+            title: 'My Posts'
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).render('error', { error: 'Server Error' });
+    }
 });
 
 module.exports = router;

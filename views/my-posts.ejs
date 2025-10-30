@@ -1,0 +1,66 @@
+<%- include('partials/header', { title: 'My Posts' }) %>
+
+<div class="main-content">
+    <div class="posts-grid">
+        <div style="grid-column: 1 / -1; margin-bottom: 2rem;">
+            <h1 style="color: #ffffff; font-size: 2rem; font-weight: 700; margin-bottom: 1rem;">My Posts</h1>
+            <p style="color: #a1a1aa;">Manage your published articles and drafts.</p>
+        </div>
+
+        <% if (posts.length > 0) { %>
+            <% posts.forEach(post => { %>
+                <article class="post-card">
+                    <% if (post.image_url) { %>
+                        <img src="<%= post.image_url %>" alt="<%= post.title %>" class="post-image">
+                    <% } %>
+                    
+                    <a href="/posts/<%= post.id %>" class="post-title">
+                        <%= post.title %>
+                    </a>
+                    
+                    <div class="post-meta">
+                        <span><%= new Date(post.created_at).toLocaleDateString('en-US', { 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                        }) %></span>
+                        <span>•</span>
+                        <span><%= Math.ceil(post.content.length / 200) %> min read</span>
+                        <!-- Removed the published/draft status since we don't have that field yet -->
+                    </div>
+                    
+                    <div class="post-content-preview">
+                        <%= post.content.substring(0, 200) %>...
+                    </div>
+                    
+                    <div class="post-actions" style="border: none; padding: 0; margin: 0; display: flex; gap: 0.5rem;">
+                        <a href="/posts/<%= post.id %>" class="btn btn-primary" style="flex: 1;">View</a>
+                        <a href="/posts/<%= post.id %>/edit" class="btn btn-secondary" style="flex: 1;">Edit</a>
+                    </div>
+                </article>
+            <% }) %>
+        <% } else { %>
+            <div class="empty-state" style="grid-column: 1 / -1;">
+                <h2>No posts yet</h2>
+                <p>Start sharing your thoughts with the community!</p>
+                <a href="/posts/new" class="btn btn-primary">Create Your First Post</a>
+            </div>
+        <% } %>
+    </div>
+    
+    <aside class="sidebar">
+        <h3>Post Stats</h3>
+        <div style="color: #a1a1aa; line-height: 1.7;">
+            <p><strong style="color: #ffffff;"><%= posts.length %></strong> total posts</p>
+            <!-- Simplified stats since we don't have published/draft status -->
+        </div>
+        
+        <div style="margin-top: 2rem;">
+            <a href="/posts/new" class="btn btn-primary" style="width: 100%; text-align: center; justify-content: center;">
+                Write New Post
+            </a>
+        </div>
+    </aside>
+</div>
+
+<%- include('partials/footer') %>

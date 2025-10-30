@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minimal Blog - <%= title || 'Clean, Simple Blogging' %></title>
     <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
@@ -13,9 +14,31 @@
                 <a href="/" class="logo">Minimal Blog</a>
                 <ul class="nav-links">
                     <li><a href="/">Home</a></li>
-                    <li><a href="/posts/new">New Post</a></li>
+                    <% if (currentUser) { %>
+                        <li><a href="/posts/new">New Post</a></li>
+                        <li><a href="/my-posts">My Posts</a></li>
+                        <li class="user-menu">
+                            <a href="#" class="user-toggle">
+                                <span class="user-avatar">
+                                    <%= currentUser.username.charAt(0).toUpperCase() %>
+                                </span>
+                                <%= currentUser.username %>
+                            </a>
+                            <div class="user-dropdown">
+                                <a href="/my-posts">My Posts</a>
+                                <form action="/auth/logout" method="POST">
+                                    <button type="submit">Sign Out</button>
+                                </form>
+                            </div>
+                        </li>
+                    <% } else { %>
+                        <li><a href="/auth/login">Login</a></li>
+                        <li><a href="/auth/register">Register</a></li>
+                    <% } %>
                     <li><a href="/about">About</a></li>
                 </ul>
             </nav>
         </div>
     </header>
+
+    <script src="/js/dropdown.js"></script>

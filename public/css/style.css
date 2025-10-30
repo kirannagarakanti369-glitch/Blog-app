@@ -70,7 +70,7 @@ nav {
   display: grid;
   grid-template-columns: 1fr 300px;
   gap: 2rem;
-  padding: 4rem 0 2rem;
+  padding: 2rem 0;
 }
 
 /* POSTS GRID */
@@ -111,6 +111,10 @@ nav {
   color: #666;
   font-size: 0.85rem;
   margin-bottom: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .post-image {
@@ -125,6 +129,7 @@ nav {
   color: #333;
   font-size: 1rem;
   line-height: 1.7;
+  margin-bottom: 1.5rem;
 }
 
 /* SIDEBAR */
@@ -135,6 +140,8 @@ nav {
   padding: 2rem;
   height: fit-content;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 100px;
 }
 
 .sidebar h3 {
@@ -147,9 +154,17 @@ nav {
   padding-bottom: 0.3rem;
 }
 
+.sidebar p {
+  color: #666;
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+
 /* BUTTONS */
 .btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
   font-weight: 600;
@@ -158,6 +173,7 @@ nav {
   transition: all 0.3s ease;
   border: none;
   cursor: pointer;
+  gap: 0.5rem;
 }
 
 .btn-primary {
@@ -185,6 +201,11 @@ nav {
   color: white;
 }
 
+.btn-danger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.25);
+}
+
 /* SINGLE POST PAGE */
 .single-post {
   background: #ffffff;
@@ -200,6 +221,17 @@ nav {
   font-weight: 800;
   color: #111;
   margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.single-post-meta {
+  color: #666;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .single-post-image {
@@ -208,6 +240,7 @@ nav {
   object-fit: cover;
   border-radius: 12px;
   margin: 2rem 0;
+  border: 1px solid #eaeaea;
 }
 
 .post-content {
@@ -219,32 +252,95 @@ nav {
   padding-right: 1rem;
 }
 
+.post-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.post-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.post-content::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  border-radius: 3px;
+}
+
+.post-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #eaeaea;
+  flex-wrap: wrap;
+}
+
 /* FORMS */
+.form-container {
+  max-width: 800px;
+  margin: 100px auto 0;
+  padding: 2rem;
+}
+
+.form-card {
+  background: #ffffff;
+  border: 1px solid #eaeaea;
+  border-radius: 16px;
+  padding: 3rem;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+}
+
+.form-title {
+  color: #111;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
   font-weight: 600;
   color: #444;
+  font-size: 0.95rem;
 }
 
 .form-control {
   width: 100%;
-  padding: 0.75rem;
+  padding: 1rem;
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 8px;
   color: #111;
   font-size: 1rem;
+  transition: all 0.3s;
+  font-family: inherit;
 }
 
 .form-control:focus {
   outline: none;
   border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+textarea.form-control {
+  min-height: 300px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.file-hint {
+  color: #666;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
 }
 
 /* ABOUT PAGE */
@@ -253,14 +349,27 @@ nav {
   border: 1px solid #eaeaea;
   border-radius: 16px;
   padding: 3rem;
-  margin: 2rem 0;
+  margin: 100px auto 2rem;
+  max-width: 1200px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
 }
 
-.about-content h1 {
-  font-size: 2rem;
+.about-title {
   color: #111;
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 2rem;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.about-content p {
+  color: #666;
   margin-bottom: 1.5rem;
+  line-height: 1.7;
+  font-size: 1.1rem;
 }
 
 /* FOOTER */
@@ -274,10 +383,170 @@ footer {
   font-size: 0.9rem;
 }
 
+/* EMPTY STATE */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: #ffffff;
+  border: 1px solid #eaeaea;
+  border-radius: 16px;
+  grid-column: 1 / -1;
+}
+
+.empty-state h2 {
+  color: #111;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.empty-state p {
+  color: #666;
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+/* AUTH BUTTONS */
+.auth-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* AUTHOR NAME */
+.author-name {
+  color: #3b82f6;
+}
+
+/* USER ACTIONS IN SIDEBAR */
+.user-actions, .auth-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.user-actions .btn,
+.auth-actions .btn {
+  text-align: center;
+  justify-content: center;
+  width: 100%;
+}
+
+/* USER MENU STYLES */
+.user-menu {
+    position: relative;
+}
+
+.user-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: #444;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+}
+
+.user-toggle:hover {
+    background: #f3f4f6;
+    color: #111;
+}
+
+.user-avatar {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: white;
+}
+
+.user-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: #ffffff;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    padding: 0.5rem;
+    min-width: 160px;
+    display: none;
+    z-index: 1000;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    margin-top: 0.5rem;
+}
+
+.user-dropdown a {
+    display: block;
+    color: #444;
+    padding: 0.75rem 1rem;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+    transition: all 0.3s;
+}
+
+.user-dropdown form {
+    margin: 0;
+}
+
+.user-dropdown button {
+    display: block;
+    background: none;
+    border: none;
+    color: #444;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+}
+
+.user-dropdown a:hover,
+.user-dropdown button:hover {
+    background: #f3f4f6;
+    color: #111;
+}
+
+/* ERROR MESSAGE STYLES */
+.error-message {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+}
+
+.error-message ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.error-message li {
+    padding: 0.25rem 0;
+}
+
 /* RESPONSIVE */
 @media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+
   .main-content {
     grid-template-columns: 1fr;
+    padding: 1rem 0;
   }
 
   nav {
@@ -285,8 +554,13 @@ footer {
     gap: 1rem;
   }
 
+  .nav-links {
+    gap: 1rem;
+  }
+
   .single-post {
     padding: 2rem;
+    margin: 1rem 0;
   }
 
   .single-post-title {
@@ -296,6 +570,54 @@ footer {
   .post-actions {
     flex-direction: column;
   }
+
+  .form-container {
+    padding: 1rem;
+    margin-top: 80px;
+  }
+
+  .form-card {
+    padding: 2rem;
+  }
+
+  .about-content {
+    margin: 80px 1rem 2rem;
+    padding: 2rem;
+  }
+
+  .empty-state {
+    margin: 1rem 0;
+    padding: 2rem 1rem;
+  }
+
+  .auth-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .auth-buttons .btn {
+    min-width: 200px;
+  }
+
+  .user-dropdown {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 16px 16px 0 0;
+    margin: 0;
+  }
+}
+
+/* Single post page specific styles */
+.main-content[style*="grid-template-columns: 1fr"] {
+    grid-template-columns: 1fr !important;
+}
+
+/* Ensure single post takes full width on single post pages */
+.main-content:has(.single-post) {
+    grid-template-columns: 1fr;
 }
 
 /* UTILITIES */
@@ -304,3 +626,4 @@ footer {
 }
 .mt-4 { margin-top: 2rem; }
 .mb-4 { margin-bottom: 2rem; }
+.hidden { display: none; }

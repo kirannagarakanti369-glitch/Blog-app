@@ -3,6 +3,10 @@
             <p>&copy; 2024 Minimal Blog. Built with Node.js, Express, EJS & PostgreSQL.</p>
         </div>
     </footer>
-    <script src="/js/script.js"></script>
+    
+    <!-- Include dropdown.js only if user is logged in -->
+    <% if (currentUser) { %>
+        <script src="/js/dropdown.js"></script>
+    <% } %>
 </body>
 </html>
