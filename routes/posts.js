@@ -40,13 +40,16 @@ const upload = multer({
     }
 });
 
-// GET / - Show all posts with author information
+// GET / - Show all posts with author information and comment counts
 router.get('/', async (req, res) => {
     try {
         const result = await pool.query(`
-            SELECT p.*, u.username as author_username 
+            SELECT p.*, u.username as author_username, 
+                   COUNT(c.id) as comment_count
             FROM posts p 
             LEFT JOIN users u ON p.user_id = u.id 
+            LEFT JOIN comments c ON p.id = c.post_id
+            GROUP BY p.id, u.username
             ORDER BY p.created_at DESC
         `);
         res.render('index', { 
@@ -58,7 +61,6 @@ router.get('/', async (req, res) => {
         res.status(500).render('error', { error: 'Server Error' });
     }
 });
-
 // GET /posts/new - Show new post form (require auth)
 router.get('/posts/new', requireAuth, (req, res) => {
     res.render('new-post', { 
@@ -85,6 +87,7 @@ router.post('/posts', requireAuth, upload.single('image'), async (req, res) => {
 });
 
 // GET /posts/:id - Show single post with author info
+// GET /posts/:id - Show single post with author info and comments
 router.get('/posts/:id', async (req, res) => {
     try {
         // Get post with author info
@@ -101,8 +104,21 @@ router.get('/posts/:id', async (req, res) => {
         
         const post = postResult.rows[0];
         
+        // Get comments for this post with author info
+        const commentsResult = await pool.query(`
+            SELECT c.*, u.username as author_username 
+            FROM comments c 
+            LEFT JOIN users u ON c.user_id = u.id 
+            WHERE c.post_id = $1 
+            ORDER BY c.created_at ASC
+        `, [req.params.id]);
+        
         // Check if current user is the author
         const isAuthor = req.session.userId === post.user_id;
+        
+        // Add comments to post object
+        post.comments = commentsResult.rows;
+        post.comment_count = commentsResult.rows.length;
         
         res.render('post', { 
             post: post,

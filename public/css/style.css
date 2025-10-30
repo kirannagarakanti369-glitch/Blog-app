@@ -620,6 +620,236 @@ footer {
     grid-template-columns: 1fr;
 }
 
+
+/* temporary */
+
+/* Ensure dropdown is hidden by default but visible when toggled */
+.user-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: #ffffff;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    padding: 0.5rem;
+    min-width: 160px;
+    z-index: 1000;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    margin-top: 0.5rem;
+}
+
+/* Make sure dropdown is visible when toggled */
+.user-dropdown[style*="display: block"] {
+    display: block !important;
+}
+
+/* Comments Section */
+.comments-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #eaeaea;
+}
+
+.comments-title {
+    color: #111;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.comment-count {
+    color: #666;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+/* Comment Form */
+.comment-form-container {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.comment-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.comment-form label {
+    color: #111;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.comment-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* Comments List */
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.comment-card {
+    background: #ffffff;
+    border: 1px solid #eaeaea;
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.comment-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.comment-author {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.comment-avatar {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: white;
+}
+
+.comment-username {
+    font-weight: 600;
+    color: #111;
+}
+
+.comment-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.85rem;
+}
+
+.comment-date {
+    color: #666;
+}
+
+.delete-comment-form {
+    margin: 0;
+}
+
+.btn-delete-comment {
+    background: none;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.btn-delete-comment:hover {
+    background: #fef2f2;
+}
+
+.comment-content {
+    color: #333;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+/* Comment Login Prompt */
+.comment-login-prompt {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.comment-login-prompt p {
+    color: #666;
+    margin: 0;
+}
+
+.comment-login-prompt a {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.comment-login-prompt a:hover {
+    text-decoration: underline;
+}
+
+/* No Comments */
+.no-comments {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: #666;
+}
+
+/* Flash Messages */
+.flash-message {
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    font-weight: 500;
+}
+
+.flash-message.success {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.flash-message.error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+/* Responsive Comments */
+@media (max-width: 768px) {
+    .comment-header {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+    }
+
+    .comment-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+    }
+
+    .comment-form-container {
+        padding: 1.5rem;
+    }
+
+    .comments-title {
+        font-size: 1.3rem;
+    }
+}
+
 /* UTILITIES */
 .text-center {
   text-align: center;
