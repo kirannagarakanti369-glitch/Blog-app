@@ -25,7 +25,9 @@
                                 <%= currentUser.username %>
                             </a>
                             <div class="user-dropdown">
+                                <a href="/profile">👤 My Profile</a>
                                 <a href="/my-posts">📝 My Posts</a>
+                                <div class="dropdown-divider"></div>
                                 <form action="/auth/logout" method="POST">
                                     <button type="submit">🚪 Sign Out</button>
                                 </form>

@@ -53,10 +53,14 @@ app.use(methodOverride('_method'));
 const postRoutes = require('./routes/posts');
 const authRoutes = require('./routes/auth');
 const commentRoutes = require('./routes/comments');
+const likeRoutes = require('./routes/likes');
+const profileRoutes = require('./routes/profiles');
 
 app.use('/', postRoutes);
 app.use('/auth', authRoutes);
 app.use('/', commentRoutes);
+app.use('/', likeRoutes);
+app.use('/', profileRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

@@ -1,0 +1,45 @@
+<%- include('partials/header', { title: 'Community Members' }) %>
+
+<div class="container">
+    <div class="users-page">
+        <h1>Community Members</h1>
+        <p class="page-subtitle">Discover other writers in our community</p>
+
+        <div class="users-grid">
+            <% users.forEach(user => { %>
+                <div class="user-card">
+                    <div class="user-card-header">
+                        <% if (user.avatar_url) { %>
+                            <img src="<%= user.avatar_url %>" alt="<%= user.username %>" class="avatar-medium">
+                        <% } else { %>
+                            <div class="avatar-placeholder avatar-medium">
+                                <%= user.username.charAt(0).toUpperCase() %>
+                            </div>
+                        <% } %>
+                        <div class="user-card-info">
+                            <h3><a href="/users/<%= user.username %>" class="user-card-name"><%= user.username %></a></h3>
+                            <p class="user-card-join-date">Joined <%= new Date(user.created_at).toLocaleDateString() %></p>
+                        </div>
+                    </div>
+                    
+                    <% if (user.bio) { %>
+                        <div class="user-card-bio">
+                            <p><%= user.bio.length > 100 ? user.bio.substring(0, 100) + '...' : user.bio %></p>
+                        </div>
+                    <% } %>
+                    
+                    <div class="user-card-stats">
+                        <span class="user-stat">📝 <%= user.post_count %> posts</span>
+                        <span class="user-stat">💬 <%= user.comment_count %> comments</span>
+                    </div>
+                    
+                    <div class="user-card-actions">
+                        <a href="/users/<%= user.username %>" class="btn btn-secondary btn-small">View Profile</a>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

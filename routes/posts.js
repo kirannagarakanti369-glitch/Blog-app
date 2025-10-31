@@ -40,18 +40,26 @@ const upload = multer({
     }
 });
 
-// GET / - Show all posts with author information and comment counts
+// GET / - Show all posts with author information, comment counts, and like counts
 router.get('/', async (req, res) => {
     try {
         const result = await pool.query(`
-            SELECT p.*, u.username as author_username, 
-                   COUNT(c.id) as comment_count
+            SELECT p.*, 
+                   u.username as author_username, 
+                   COUNT(DISTINCT c.id) as comment_count,
+                   COUNT(DISTINCT l.id) as like_count,
+                   EXISTS(
+                       SELECT 1 FROM likes 
+                       WHERE user_id = $1 AND post_id = p.id
+                   ) as user_liked
             FROM posts p 
             LEFT JOIN users u ON p.user_id = u.id 
             LEFT JOIN comments c ON p.id = c.post_id
+            LEFT JOIN likes l ON p.id = l.post_id
             GROUP BY p.id, u.username
             ORDER BY p.created_at DESC
-        `);
+        `, [req.session.userId]);
+        
         res.render('index', { 
             posts: result.rows,
             currentUser: res.locals.currentUser
@@ -61,6 +69,7 @@ router.get('/', async (req, res) => {
         res.status(500).render('error', { error: 'Server Error' });
     }
 });
+
 // GET /posts/new - Show new post form (require auth)
 router.get('/posts/new', requireAuth, (req, res) => {
     res.render('new-post', { 
@@ -86,8 +95,7 @@ router.post('/posts', requireAuth, upload.single('image'), async (req, res) => {
     }
 });
 
-// GET /posts/:id - Show single post with author info
-// GET /posts/:id - Show single post with author info and comments
+//GET /posts/:id - Show single post with author info, comments, and likes
 router.get('/posts/:id', async (req, res) => {
     try {
         // Get post with author info
@@ -106,19 +114,32 @@ router.get('/posts/:id', async (req, res) => {
         
         // Get comments for this post with author info
         const commentsResult = await pool.query(`
-            SELECT c.*, u.username as author_username 
+            SELECT c.*, u.username as author_username, u.avatar_url
             FROM comments c 
             LEFT JOIN users u ON c.user_id = u.id 
             WHERE c.post_id = $1 
             ORDER BY c.created_at ASC
         `, [req.params.id]);
         
+        // Get likes count and check if current user liked the post
+        const likesResult = await pool.query(`
+            SELECT COUNT(*) as like_count,
+                   EXISTS(
+                       SELECT 1 FROM likes 
+                       WHERE user_id = $1 AND post_id = $2
+                   ) as user_liked
+            FROM likes 
+            WHERE post_id = $2
+        `, [req.session.userId, req.params.id]);
+        
         // Check if current user is the author
         const isAuthor = req.session.userId === post.user_id;
         
-        // Add comments to post object
+        // Add comments and likes to post object
         post.comments = commentsResult.rows;
         post.comment_count = commentsResult.rows.length;
+        post.like_count = parseInt(likesResult.rows[0]?.like_count) || 0;
+        post.user_liked = likesResult.rows[0]?.user_liked || false;
         
         res.render('post', { 
             post: post,
@@ -130,7 +151,6 @@ router.get('/posts/:id', async (req, res) => {
         res.status(500).render('error', { error: 'Server Error' });
     }
 });
-
 // GET /posts/:id/edit - Show edit form (require auth + ownership)
 router.get('/posts/:id/edit', requireAuth, requireOwnership('post'), async (req, res) => {
     try {
@@ -188,13 +208,19 @@ router.get('/about', (req, res) => {
     res.render('about', { title: 'About' });
 });
 
-// GET /my-posts - Show current user's posts
+// GET /my-posts - Show current user's posts with stats
 router.get('/my-posts', requireAuth, async (req, res) => {
     try {
         const result = await pool.query(`
-            SELECT * FROM posts 
-            WHERE user_id = $1 
-            ORDER BY created_at DESC
+            SELECT p.*, 
+                   COUNT(DISTINCT c.id) as comment_count,
+                   COUNT(DISTINCT l.id) as like_count
+            FROM posts p 
+            LEFT JOIN comments c ON p.id = c.post_id
+            LEFT JOIN likes l ON p.id = l.post_id
+            WHERE p.user_id = $1 
+            GROUP BY p.id
+            ORDER BY p.created_at DESC
         `, [req.session.userId]);
         
         res.render('my-posts', {
@@ -206,5 +232,4 @@ router.get('/my-posts', requireAuth, async (req, res) => {
         res.status(500).render('error', { error: 'Server Error' });
     }
 });
-
 module.exports = router;

@@ -1,137 +1,207 @@
 <%- include('partials/header', { title: post.title }) %>
 
 <div class="container">
-    <div class="main-content" style="grid-template-columns: 1fr;">
-        <!-- Flash Messages -->
-        <% if (success) { %>
-            <div class="flash-message success">
-                <%= success %>
-            </div>
+  <div class="main-content" style="grid-template-columns: 1fr">
+    <!-- Flash Messages -->
+    <% if (success) { %>
+    <div class="flash-message success"><%= success %></div>
+    <% } %> <% if (error) { %>
+    <div class="flash-message error"><%= error %></div>
+    <% } %>
+
+    <article class="single-post">
+      <h1 class="single-post-title"><%= post.title %></h1>
+
+      <div class="single-post-meta">
+        <span>By 
+        <a href="/users/<%= post.author_username %>" class="author-name">
+            <%= post.author_username || 'Unknown' %>
+        </a>
+        </span>
+        <span>•</span>
+        <span
+          >Posted on <%= new Date(post.created_at).toLocaleDateString('en-US', {
+          year: 'numeric', month: 'long', day: 'numeric' }) %></span
+        >
+        <% if (post.updated_at !== post.created_at) { %>
+        <span>•</span>
+        <span
+          >Updated on <%= new Date(post.updated_at).toLocaleDateString('en-US',
+          { year: 'numeric', month: 'long', day: 'numeric' }) %></span
+        >
         <% } %>
-        <% if (error) { %>
-            <div class="flash-message error">
-                <%= error %>
-            </div>
+        <span>•</span>
+        <span><%= Math.ceil(post.content.length / 200) %> min read</span>
+      </div>
+
+      <% if (post.image_url) { %>
+      <img
+        src="<%= post.image_url %>"
+        alt="<%= post.title %>"
+        class="single-post-image"
+      />
+      <% } %>
+
+      <div class="post-content">
+        <%= post.content.replace(/\n/g, '<br />') %>
+      </div>
+
+      <div class="post-actions">
+        <a href="/" class="btn btn-secondary">← Back to Home</a>
+
+        <% if (isAuthor) { %>
+        <a href="/posts/<%= post.id %>/edit" class="btn btn-primary"
+          >Edit Post</a
+        >
+        <form
+          action="/posts/<%= post.id %>?_method=DELETE"
+          method="POST"
+          style="display: inline"
+        >
+          <button
+            type="submit"
+            class="btn btn-danger"
+            onclick="return confirm('Are you sure you want to delete this post?')"
+          >
+            Delete Post
+          </button>
+        </form>
         <% } %>
+      </div>
+    </article>
 
-        <article class="single-post">
-            <h1 class="single-post-title"><%= post.title %></h1>
-            
-            <div class="single-post-meta">
-                <span>By <strong class="author-name"><%= post.author_username || 'Unknown' %></strong></span>
-                <span>•</span>
-                <span>Posted on <%= new Date(post.created_at).toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                }) %></span>
-                <% if (post.updated_at !== post.created_at) { %>
-                    <span>•</span>
-                    <span>Updated on <%= new Date(post.updated_at).toLocaleDateString('en-US', { 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric' 
-                    }) %></span>
-                <% } %>
-                <span>•</span>
-                <span><%= Math.ceil(post.content.length / 200) %> min read</span>
-            </div>
-            
-            <% if (post.image_url) { %>
-                <img src="<%= post.image_url %>" alt="<%= post.title %>" class="single-post-image">
-            <% } %>
-            
-            <div class="post-content">
-                <%= post.content.replace(/\n/g, '<br>') %>
-            </div>
-            
-            <div class="post-actions">
-                <a href="/" class="btn btn-secondary">← Back to Home</a>
-                
-                <% if (isAuthor) { %>
-                    <a href="/posts/<%= post.id %>/edit" class="btn btn-primary">Edit Post</a>
-                    <form action="/posts/<%= post.id %>?_method=DELETE" method="POST" style="display: inline;">
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this post?')">Delete Post</button>
-                    </form>
-                <% } %>
-            </div>
-        </article>
+    <!-- Comments Section -->
+    <section class="comments-section">
+      <h2 class="comments-title">
+        💬 Comments <% if (post.comment_count > 0) { %>
+        <span class="comment-count">(<%= post.comment_count %>)</span>
+        <% } %>
+      </h2>
 
-        <!-- Comments Section -->
-        <section class="comments-section">
-            <h2 class="comments-title">
-                💬 Comments 
-                <% if (post.comment_count > 0) { %>
-                    <span class="comment-count">(<%= post.comment_count %>)</span>
-                <% } %>
-            </h2>
+      <!-- Comment Form -->
+      <% if (currentUser) { %>
+      <div class="comment-form-container">
+        <form
+          action="/posts/<%= post.id %>/comments"
+          method="POST"
+          class="comment-form"
+        >
+          <div class="form-group">
+            <label for="comment-content">Add a comment</label>
+            <textarea
+              id="comment-content"
+              name="content"
+              class="form-control"
+              rows="4"
+              placeholder="Share your thoughts..."
+              required
+            ></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Post Comment</button>
+        </form>
+      </div>
+      <% } else { %>
+      <div class="comment-login-prompt">
+        <p>Please <a href="/auth/login">login</a> to leave a comment.</p>
+      </div>
+      <% } %>
 
-            <!-- Comment Form -->
-            <% if (currentUser) { %>
-                <div class="comment-form-container">
-                    <form action="/posts/<%= post.id %>/comments" method="POST" class="comment-form">
-                        <div class="form-group">
-                            <label for="comment-content">Add a comment</label>
-                            <textarea 
-                                id="comment-content" 
-                                name="content" 
-                                class="form-control" 
-                                rows="4" 
-                                placeholder="Share your thoughts..."
-                                required
-                            ></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Post Comment</button>
-                    </form>
-                </div>
-            <% } else { %>
-                <div class="comment-login-prompt">
-                    <p>Please <a href="/auth/login">login</a> to leave a comment.</p>
-                </div>
-            <% } %>
-
-            <!-- Comments List -->
-            <div class="comments-list">
-                <% if (post.comments && post.comments.length > 0) { %>
-                    <% post.comments.forEach(comment => { %>
-                        <div class="comment-card" id="comment-<%= comment.id %>">
-                            <div class="comment-header">
-                                <div class="comment-author">
+      <!-- Comments List -->
+      <div class="comments-list">
+        <% if (post.comments && post.comments.length > 0) { %> <%
+        post.comments.forEach(comment => { %>
+        <div class="comment-card" id="comment-<%= comment.id %>">
+          <div class="comment-header">
+            <!-- <div class="comment-author">
                                     <span class="comment-avatar">
                                         <%= comment.author_username.charAt(0).toUpperCase() %>
                                     </span>
                                     <span class="comment-username"><%= comment.author_username %></span>
-                                </div>
-                                <div class="comment-meta">
-                                    <span class="comment-date">
-                                        <%= new Date(comment.created_at).toLocaleDateString('en-US', { 
-                                            year: 'numeric', 
-                                            month: 'short', 
-                                            day: 'numeric',
-                                            hour: '2-digit',
-                                            minute: '2-digit'
-                                        }) %>
-                                    </span>
-                                    <% if (currentUser && (currentUser.id === comment.user_id || isAuthor)) { %>
-                                        <form action="/comments/<%= comment.id %>?_method=DELETE" method="POST" class="delete-comment-form">
-                                            <button type="submit" class="btn-delete-comment" onclick="return confirm('Delete this comment?')">Delete</button>
-                                        </form>
-                                    <% } %>
-                                </div>
-                            </div>
-                            <div class="comment-content">
-                                <%= comment.content.replace(/\n/g, '<br>') %>
-                            </div>
-                        </div>
-                    <% }) %>
-                <% } else { %>
-                    <div class="no-comments">
-                        <p>No comments yet. Be the first to share your thoughts!</p>
-                    </div>
-                <% } %>
+                                </div> -->
+
+            <div class="comment-author">
+    <% if (comment.avatar_url) { %>
+        <img src="<%= comment.avatar_url %>" alt="<%= comment.author_username %>" class="avatar-small">
+    <% } else { %>
+        <div class="avatar-placeholder avatar-small">
+            <%= comment.author_username.charAt(0).toUpperCase() %>
+        </div>
+    <% } %>
+    <a href="/users/<%= comment.author_username %>" class="comment-username">
+        <%= comment.author_username %>
+    </a>
+</div>
+
+            <div class="comment-meta">
+              <span class="comment-date">
+                <%= new Date(comment.created_at).toLocaleDateString('en-US', {
+                year: 'numeric', month: 'short', day: 'numeric', hour:
+                '2-digit', minute: '2-digit' }) %>
+              </span>
+              <% if (currentUser && (currentUser.id === comment.user_id ||
+              isAuthor)) { %>
+              <form
+                action="/comments/<%= comment.id %>?_method=DELETE"
+                method="POST"
+                class="delete-comment-form"
+              >
+                <button
+                  type="submit"
+                  class="btn-delete-comment"
+                  onclick="return confirm('Delete this comment?')"
+                >
+                  Delete
+                </button>
+              </form>
+              <% } %>
             </div>
-        </section>
+          </div>
+          <div class="comment-content">
+            <%= comment.content.replace(/\n/g, '<br />') %>
+          </div>
+        </div>
+        <% }) %> <% } else { %>
+        <div class="no-comments">
+          <p>No comments yet. Be the first to share your thoughts!</p>
+        </div>
+        <% } %>
+      </div>
+    </section>
+
+    <!-- Like Section -->
+    <div class="like-section">
+      <div class="like-stats">
+        <span class="like-count">❤️ <%= post.like_count %> likes</span>
+      </div>
+
+      <% if (currentUser) { %>
+      <div class="like-actions">
+        <% if (post.user_liked) { %>
+        <form
+          action="/posts/<%= post.id %>/like?_method=DELETE"
+          method="POST"
+          class="like-form"
+        >
+          <button type="submit" class="btn-like btn-liked">❤️ Liked</button>
+        </form>
+        <% } else { %>
+        <form
+          action="/posts/<%= post.id %>/like"
+          method="POST"
+          class="like-form"
+        >
+          <button type="submit" class="btn-like">🤍 Like</button>
+        </form>
+        <% } %>
+      </div>
+      <% } else { %>
+      <div class="like-login-prompt">
+        <a href="/auth/login" class="btn-like">🤍 Like</a>
+        <span class="login-hint">Login to like this post</span>
+      </div>
+      <% } %>
     </div>
+  </div>
 </div>
 
 <%- include('partials/footer') %>

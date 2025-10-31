@@ -1,0 +1,55 @@
+<%- include('partials/header', { title: 'Edit Profile' }) %>
+
+<div class="container">
+    <div class="form-container">
+        <div class="form-card">
+            <h1 class="form-title">Edit Profile</h1>
+            
+            <% if (error) { %>
+                <div class="flash-message error">
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <form action="/profile?_method=PUT" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" class="form-control" value="<%= user.username %>" disabled>
+                    <small class="form-text">Username cannot be changed</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" class="form-control" value="<%= user.email %>" disabled>
+                    <small class="form-text">Email cannot be changed</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="avatar">Profile Picture</label>
+                    <% if (user.avatar_url) { %>
+                        <div class="current-avatar">
+                            <p>Current Avatar:</p>
+                            <img src="<%= user.avatar_url %>" alt="Current avatar" class="avatar-preview">
+                            <input type="hidden" name="existingAvatar" value="<%= user.avatar_url %>">
+                        </div>
+                    <% } %>
+                    <input type="file" id="avatar" name="avatar" class="form-control" accept="image/*">
+                    <small class="form-text">Upload a new profile picture (max 2MB, JPG, PNG, GIF, WebP)</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="bio">Bio</label>
+                    <textarea id="bio" name="bio" class="form-control" rows="4" placeholder="Tell people about yourself..."><%= user.bio || '' %></textarea>
+                    <small class="form-text">Write a short bio to introduce yourself to the community</small>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Update Profile</button>
+                    <a href="/profile" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

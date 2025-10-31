@@ -1,75 +1,105 @@
 <%- include('partials/header', { title: 'Home' }) %>
 
 <div class="container">
-    <div class="main-content">
-        <div class="posts-grid">
-            <% if (posts.length > 0) { %>
-                <% posts.forEach(post => { %>
-                    <article class="post-card">
-                        <% if (post.image_url) { %>
-                            <img src="<%= post.image_url %>" alt="<%= post.title %>" class="post-image">
-                        <% } %>
-                        
-                        <a href="/posts/<%= post.id %>" class="post-title">
-                            <%= post.title %>
-                        </a>
-                        
-                        <div class="post-meta">
-                            <span>By <strong class="author-name"><%= post.author_username || 'Unknown' %></strong></span>
-                            <span>•</span>
-                            <span><%= new Date(post.created_at).toLocaleDateString('en-US', { 
-                                year: 'numeric', 
-                                month: 'long', 
-                                day: 'numeric' 
-                            }) %></span>
-                            <span>•</span>
-                            <span><%= Math.ceil(post.content.length / 200) %> min read</span>
-                            <% if (post.comment_count > 0) { %>
-                                <span>•</span>
-                                <span>💬 <%= post.comment_count %> comments</span>
-                            <% } %>
-                        </div>
-                        
-                        <div class="post-content-preview">
-                            <%= post.content.substring(0, 200) %>...
-                        </div>
-                        
-                        <a href="/posts/<%= post.id %>" class="btn btn-primary">Read More</a>
-                    </article>
-                <% }) %>
-            <% } else { %>
-                <div class="empty-state">
-                    <h2>No posts yet</h2>
-                    <p>Be the first to create a blog post and start sharing your thoughts!</p>
-                    <% if (currentUser) { %>
-                        <a href="/posts/new" class="btn btn-primary">Create First Post</a>
-                    <% } else { %>
-                        <div class="auth-buttons">
-                            <a href="/auth/register" class="btn btn-primary">Join to Write</a>
-                            <a href="/auth/login" class="btn btn-secondary">Sign In</a>
-                        </div>
-                    <% } %>
-                </div>
-            <% } %>
+  <div class="main-content">
+    <div class="posts-grid">
+      <% if (posts.length > 0) { %> 
+      <% posts.forEach(post => { %>
+      <article class="post-card">
+        <% if (post.image_url) { %>
+        <img
+          src="<%= post.image_url %>"
+          alt="<%= post.title %>"
+          class="post-image"
+        />
+        <% } %>
+
+        <a href="/posts/<%= post.id %>" class="post-title">
+          <%= post.title %>
+        </a>
+
+        <div class="post-meta">
+      <span>By 
+        <a href="/users/<%= post.author_username %>" class="author-name">
+            <%= post.author_username || 'Unknown' %>
+        </a>
+      </span>          <span>•</span>
+          <span><%= new Date(post.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></span>
+          <span>•</span>
+          <span><%= Math.ceil(post.content.length / 200) %> min read</span>
+          <% if (post.comment_count > 0) { %>
+          <span>•</span>
+          <span>💬 <%= post.comment_count %> comments</span>
+          <% } %> 
+          <% if (post.like_count > 0) { %>
+          <span>•</span>
+          <span>❤️ <%= post.like_count %> likes</span>
+          <% } %>
         </div>
-        
-        <aside class="sidebar">
-            <h3>About This Blog</h3>
-            <p>A minimal, clean blogging platform built with modern web technologies. Focus on writing, nothing else.</p>
-            
-            <% if (currentUser) { %>
-                <div class="user-actions">
-                    <a href="/posts/new" class="btn btn-primary">Write New Post</a>
-                    <a href="/my-posts" class="btn btn-secondary">My Posts</a>
-                </div>
+
+        <div class="post-content-preview">
+          <%= post.content.substring(0, 200) %>...
+        </div>
+
+        <div class="post-actions">
+          <a href="/posts/<%= post.id %>" class="btn btn-primary">Read More</a>
+          
+          <% if (currentUser) { %>
+            <% if (post.user_liked) { %>
+              <form action="/posts/<%= post.id %>/like?_method=DELETE" method="POST" class="like-form-inline">
+                <button type="submit" class="post-like-btn post-liked">
+                  ❤️ <%= post.like_count || 0 %>
+                </button>
+              </form>
             <% } else { %>
-                <div class="auth-actions">
-                    <a href="/auth/register" class="btn btn-primary">Join Community</a>
-                    <a href="/auth/login" class="btn btn-secondary">Sign In</a>
-                </div>
+              <form action="/posts/<%= post.id %>/like" method="POST" class="like-form-inline">
+                <button type="submit" class="post-like-btn">
+                  🤍 <%= post.like_count || 0 %>
+                </button>
+              </form>
             <% } %>
-        </aside>
+          <% } else { %>
+            <a href="/auth/login" class="post-like-btn">
+              🤍 <%= post.like_count || 0 %>
+            </a>
+          <% } %>
+        </div>
+      </article>
+      <% }) %> 
+      <% } else { %>
+      <div class="empty-state">
+        <h2>No posts yet</h2>
+        <p>Be the first to create a blog post and start sharing your thoughts!</p>
+        <% if (currentUser) { %>
+        <a href="/posts/new" class="btn btn-primary">Create First Post</a>
+        <% } else { %>
+        <div class="auth-buttons">
+          <a href="/auth/register" class="btn btn-primary">Join to Write</a>
+          <a href="/auth/login" class="btn btn-secondary">Sign In</a>
+        </div>
+        <% } %>
+      </div>
+      <% } %>
     </div>
+
+    <aside class="sidebar">
+      <h3>About This Blog</h3>
+      <p>A minimal, clean blogging platform built with modern web technologies. Focus on writing, nothing else.</p>
+
+      <% if (currentUser) { %>
+      <div class="user-actions">
+        <a href="/posts/new" class="btn btn-primary">Write New Post</a>
+        <a href="/my-posts" class="btn btn-secondary">My Posts</a>
+        <a href="/users" class="btn btn-secondary">Community</a> 
+      </div>
+      <% } else { %>
+      <div class="auth-actions">
+        <a href="/auth/register" class="btn btn-primary">Join Community</a>
+        <a href="/auth/login" class="btn btn-secondary">Sign In</a>
+      </div>
+      <% } %>
+    </aside>
+  </div>
 </div>
 
 <%- include('partials/footer') %>

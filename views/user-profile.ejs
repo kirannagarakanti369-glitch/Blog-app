@@ -1,0 +1,79 @@
+<%- include('partials/header', { title: user.username + "'s Profile" }) %>
+
+<div class="container">
+    <div class="profile-page">
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <% if (user.avatar_url) { %>
+                    <img src="<%= user.avatar_url %>" alt="<%= user.username %>" class="avatar-large">
+                <% } else { %>
+                    <div class="avatar-placeholder avatar-large">
+                        <%= user.username.charAt(0).toUpperCase() %>
+                    </div>
+                <% } %>
+            </div>
+            <div class="profile-info">
+                <h1 class="profile-username"><%= user.username %></h1>
+                <p class="profile-join-date">Member since <%= new Date(user.created_at).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                }) %></p>
+                <% if (user.bio) { %>
+                    <div class="profile-bio">
+                        <p><%= user.bio %></p>
+                    </div>
+                <% } %>
+                <% if (isOwnProfile) { %>
+                    <div class="profile-actions">
+                        <a href="/profile/edit" class="btn btn-primary">Edit Profile</a>
+                        <a href="/my-posts" class="btn btn-secondary">My Posts</a>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+
+        <div class="profile-stats">
+            <div class="stat-card">
+                <div class="stat-number"><%= user.stats.post_count %></div>
+                <div class="stat-label">Posts</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number"><%= user.stats.comment_count %></div>
+                <div class="stat-label">Comments</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number"><%= user.stats.like_count %></div>
+                <div class="stat-label">Likes Given</div>
+            </div>
+        </div>
+
+        <% if (user.posts && user.posts.length > 0) { %>
+            <section class="recent-posts">
+                <h2>Recent Posts by <%= user.username %></h2>
+                <div class="posts-grid-mini">
+                    <% user.posts.forEach(post => { %>
+                        <article class="post-card-mini">
+                            <a href="/posts/<%= post.id %>" class="post-title-mini">
+                                <%= post.title %>
+                            </a>
+                            <div class="post-meta-mini">
+                                <span><%= new Date(post.created_at).toLocaleDateString() %></span>
+                                <span>•</span>
+                                <span>💬 <%= post.comment_count %></span>
+                                <span>•</span>
+                                <span>❤️ <%= post.like_count %></span>
+                            </div>
+                        </article>
+                    <% }) %>
+                </div>
+            </section>
+        <% } else { %>
+            <div class="no-posts">
+                <p><%= user.username %> hasn't published any posts yet.</p>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('partials/footer') %>
