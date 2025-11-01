@@ -1,3 +1,27 @@
+const { Pool } = require('pg');
+
+// CORRECTED Database connection for middleware
+let poolConfig;
+
+if (process.env.DATABASE_URL) {
+    // Production - use DATABASE_URL directly
+    poolConfig = {
+        connectionString: process.env.DATABASE_URL,
+        ssl: { rejectUnauthorized: false }
+    };
+} else {
+    // Development
+    poolConfig = {
+        host: process.env.DB_HOST || 'localhost',
+        port: process.env.DB_PORT || 5432,
+        database: process.env.DB_NAME || 'minimal_blog',
+        user: process.env.DB_USER || 'postgres',
+        password: process.env.DB_PASSWORD || '',
+    };
+}
+
+const pool = new Pool(poolConfig);
+
 // Check if user is authenticated
 const requireAuth = (req, res, next) => {
     if (!req.session.userId) {
@@ -19,15 +43,6 @@ const requireGuest = (req, res, next) => {
 const requireOwnership = (model) => {
     return async (req, res, next) => {
         try {
-            const { Pool } = require('pg');
-            const pool = new Pool({
-                host: process.env.DB_HOST,
-                port: process.env.DB_PORT,
-                database: process.env.DB_NAME,
-                user: process.env.DB_USER,
-                password: process.env.DB_PASSWORD,
-            });
-
             let result;
             if (model === 'post') {
                 result = await pool.query('SELECT user_id FROM posts WHERE id = $1', [req.params.id]);

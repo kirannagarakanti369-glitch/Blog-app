@@ -5,16 +5,27 @@ const path = require('path');
 const { Pool } = require('pg');
 const { requireAuth, requireOwnership } = require('../middleware/auth');
 
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL || {
-        host: process.env.DB_HOST,
-        port: process.env.DB_PORT,
-        database: process.env.DB_NAME,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-    },
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-});
+// CORRECTED Database connection
+let poolConfig;
+
+if (process.env.DATABASE_URL) {
+    // Production - use DATABASE_URL directly
+    poolConfig = {
+        connectionString: process.env.DATABASE_URL,
+        ssl: { rejectUnauthorized: false }
+    };
+} else {
+    // Development
+    poolConfig = {
+        host: process.env.DB_HOST || 'localhost',
+        port: process.env.DB_PORT || 5432,
+        database: process.env.DB_NAME || 'minimal_blog',
+        user: process.env.DB_USER || 'postgres',
+        password: process.env.DB_PASSWORD || '',
+    };
+}
+
+const pool = new Pool(poolConfig);
 
 // Multer configuration for image uploads
 const storage = multer.diskStorage({
@@ -98,7 +109,7 @@ router.post('/posts', requireAuth, upload.single('image'), async (req, res) => {
     }
 });
 
-//GET /posts/:id - Show single post with author info, comments, and likes
+// GET /posts/:id - Show single post with author info, comments, and likes
 router.get('/posts/:id', async (req, res) => {
     try {
         // Get post with author info
@@ -154,6 +165,7 @@ router.get('/posts/:id', async (req, res) => {
         res.status(500).render('error', { error: 'Server Error' });
     }
 });
+
 // GET /posts/:id/edit - Show edit form (require auth + ownership)
 router.get('/posts/:id/edit', requireAuth, requireOwnership('post'), async (req, res) => {
     try {
@@ -235,4 +247,5 @@ router.get('/my-posts', requireAuth, async (req, res) => {
         res.status(500).render('error', { error: 'Server Error' });
     }
 });
+
 module.exports = router;
