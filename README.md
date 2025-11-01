@@ -39,3 +39,13 @@ A full-stack minimalist blog application built with Node.js and Express. Users c
 - **Authentication**: Session-based
 - **File Upload**: Multer for image handling
 
+## Main Page
+<img width="1892" height="907" alt="Screenshot 2025-11-01 215413" src="https://github.com/user-attachments/assets/f0a212b1-f108-4e42-aa05-01be5dabe4e1" />
+
+## Sign Up & sign In
+<img width="1899" height="917" alt="Screenshot 2025-11-01 215128" src="https://github.com/user-attachments/assets/f7bb91f4-aaa3-43b5-9b67-7935fd50dc30" />
+
+## User Profile
+<img width="1896" height="919" alt="Screenshot 2025-11-01 215451" src="https://github.com/user-attachments/assets/e074cbd2-556f-47d3-b8b7-d531d94d8750" />
+
+
