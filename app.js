@@ -3,49 +3,30 @@ const path = require('path');
 const dotenv = require('dotenv');
 const methodOverride = require('method-override');
 const session = require('express-session');
-const { Pool } = require('pg');
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Create a pool for sessions (using the same config as your other pools)
-const sessionPool = new Pool({
-    connectionString: process.env.DATABASE_URL || {
-        host: process.env.DB_HOST,
-        port: process.env.DB_PORT,
-        database: process.env.DB_NAME,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-    },
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-});
-
 // Middleware
 app.set('view engine', 'ejs');
 
-// Session configuration (MUST COME FIRST)
+// Simple Session configuration - NO connect-pg-simple
 const sessionConfig = {
     secret: process.env.SESSION_SECRET || 'fallback-secret-for-development',
     resave: false,
     saveUninitialized: false,
-    store: require('connect-pg-simple')(session)({
-        pool: sessionPool,
-        tableName: 'user_sessions', // Different table name to avoid conflicts
-        createTableIfMissing: true // This will create the table automatically!
-    }),
     cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // Enable HTTPS in production
-        maxAge: 1000 * 60 * 60 * 24, // 24 hours
-        sameSite: 'lax'
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 1000 * 60 * 60 * 24,
     }
 };
 
 app.use(session(sessionConfig));
 
-// Flash message middleware (AFTER session)
+// Flash message middleware
 app.use((req, res, next) => {
     res.locals.success = req.session.success;
     res.locals.error = req.session.error;
@@ -54,7 +35,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// Make user data available to all templates (AFTER session)
+// Make user data available to all templates
 app.use((req, res, next) => {
     res.locals.currentUser = req.session.userId ? {
         id: req.session.userId,
@@ -63,7 +44,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// Other middleware (AFTER session)
+// Other middleware
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
