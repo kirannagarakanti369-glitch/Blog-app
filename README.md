@@ -45,6 +45,8 @@ A full-stack minimalist blog application built with Node.js and Express. Users c
 ## Sign Up & sign In
 <img width="1899" height="917" alt="Screenshot 2025-11-01 215128" src="https://github.com/user-attachments/assets/f7bb91f4-aaa3-43b5-9b67-7935fd50dc30" />
 
+<img width="1894" height="917" alt="Screenshot 2025-11-01 215159" src="https://github.com/user-attachments/assets/9891ad59-bea0-4325-9d13-5589f2ee3617" />
+
 ## User Profile
 <img width="1896" height="919" alt="Screenshot 2025-11-01 215451" src="https://github.com/user-attachments/assets/e074cbd2-556f-47d3-b8b7-d531d94d8750" />
 
