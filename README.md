@@ -39,4 +39,3 @@ A full-stack minimalist blog application built with Node.js and Express. Users c
 - **Authentication**: Session-based
 - **File Upload**: Multer for image handling
 
-s README.md file! Would you like me to also create installation instructions or add any other sections like API documentation or contribution guidelines?
