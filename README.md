@@ -2,12 +2,21 @@
 
 A full-stack minimalist blog application built with Node.js and Express. Users can create, share, and interact with blog posts in a clean, community-focused platform.
 
+
+## Main Page
+<img width="1892" height="907" alt="Screenshot 2025-11-01 215413" src="https://github.com/user-attachments/assets/f0a212b1-f108-4e42-aa05-01be5dabe4e1" />
+
 ## ✨ Features
 
 ### 🔐 User Authentication
 - **User Registration** - Create a new account
 - **Secure Login** - Sign in to access personalized features
 - **Session Management** - Persistent user sessions
+
+## Sign Up & sign In
+<img width="1899" height="917" alt="Screenshot 2025-11-01 215128" src="https://github.com/user-attachments/assets/f7bb91f4-aaa3-43b5-9b67-7935fd50dc30" />
+
+<img width="1894" height="917" alt="Screenshot 2025-11-01 215159" src="https://github.com/user-attachments/assets/9891ad59-bea0-4325-9d13-5589f2ee3617" />
 
 ### 📖 Blog Display
 - **Curated Post Feed** - Browse all blog posts in chronological order
@@ -21,10 +30,16 @@ A full-stack minimalist blog application built with Node.js and Express. Users c
 - **Commenting** - 💬 Engage in discussions with other users
 - **Personal Dashboard** - Manage your own posts and activity
 
+## User Profile
+<img width="1896" height="919" alt="Screenshot 2025-11-01 215451" src="https://github.com/user-attachments/assets/e074cbd2-556f-47d3-b8b7-d531d94d8750" />
+
 ### 👥 Community Features
 - **User Directory** - Discover all community members
 - **User Profiles** - View other users' posts and activity
 - **Community Engagement** - Join discussions and interact with other bloggers
+
+## Community Users List
+<img width="1898" height="921" alt="Screenshot 2025-11-01 221357" src="https://github.com/user-attachments/assets/a27c5938-c882-4e63-ac84-03fe38837b73" />
 
 ### 🧭 Navigation & UX
 - **Intuitive Menu** - Home, Login, Register, About
@@ -39,16 +54,3 @@ A full-stack minimalist blog application built with Node.js and Express. Users c
 - **Authentication**: Session-based
 - **File Upload**: Multer for image handling
 
-## Main Page
-<img width="1892" height="907" alt="Screenshot 2025-11-01 215413" src="https://github.com/user-attachments/assets/f0a212b1-f108-4e42-aa05-01be5dabe4e1" />
-
-## Sign Up & sign In
-<img width="1899" height="917" alt="Screenshot 2025-11-01 215128" src="https://github.com/user-attachments/assets/f7bb91f4-aaa3-43b5-9b67-7935fd50dc30" />
-
-<img width="1894" height="917" alt="Screenshot 2025-11-01 215159" src="https://github.com/user-attachments/assets/9891ad59-bea0-4325-9d13-5589f2ee3617" />
-
-## User Profile
-<img width="1896" height="919" alt="Screenshot 2025-11-01 215451" src="https://github.com/user-attachments/assets/e074cbd2-556f-47d3-b8b7-d531d94d8750" />
-
-## Community Users List
-<img width="1898" height="921" alt="Screenshot 2025-11-01 221357" src="https://github.com/user-attachments/assets/a27c5938-c882-4e63-ac84-03fe38837b73" />
